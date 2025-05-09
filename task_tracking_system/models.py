@@ -18,7 +18,7 @@ class Task(models.Model):
     description = models.CharField(max_length = 300)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='I')
     priority = models.CharField(max_length=2, choices=PRIORITY_CHOICES, default='U')
-    due_date = models.DateField(null=True, blank=True)
+    deadline = models.DateField(null=True, blank=True)
 
 
     def __str__(self): 
@@ -27,5 +27,5 @@ class Task(models.Model):
 class Comment(models.Model):
     text = models.TextField(blank=False)
     date = models.DateTimeField(auto_now_add=True)
-    task = models.ForeignKey(Task, on_delete=models.SET_NULL, blank=False)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False)
+    task = models.ForeignKey(Task, on_delete=models.SET_NULL, blank=False, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
