@@ -1,33 +1,31 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Task(models.Model):
-    STATUS_PENDING = 'I'
-    STATUS_COMPLETED = 'D'
-    STATUS_FAILD = 'F'
 
     STATUS_CHOICES = [
-        (STATUS_PENDING, 'In progress'),
-        (STATUS_COMPLETED, 'Done'),
-        (STATUS_FAILD, 'Faild'),
+        ('I', 'In progress'),
+        ('D', 'Done'),
+        ('F', 'Faild'),
     ]
 
-    PRIORITY_COMPLETE_URGENTLY = 'U'
-    PRIORITY_COMPLETE_NOT_URGENT = 'NU'
-
     PRIORITY_CHOICES = [
-        (PRIORITY_COMPLETE_URGENTLY, 'Виконати Терміново / Complete urgently'),
-        (PRIORITY_COMPLETE_NOT_URGENT, 'Виконання не є терміновим  / Completion is not urgent'),
+        ('U', 'Виконати Терміново / Complete urgently'),
+        ('NU', 'Виконання не є терміновим  / Completion is not urgent'),
     ]
 
     name = models.CharField(max_length = 30, unique=True)
     description = models.CharField(max_length = 300)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=STATUS_PENDING)
-    priority = models.CharField(max_length=2, choices=PRIORITY_CHOICES, default=PRIORITY_COMPLETE_NOT_URGENT)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='I')
+    priority = models.CharField(max_length=2, choices=PRIORITY_CHOICES, default='U')
     due_date = models.DateField(null=True, blank=True)
 
 
     def __str__(self): 
         return self.name 
 
-
-
+class Comment(models.Model):
+    text = models.TextField(blank=False)
+    date = models.DateTimeField(auto_now_add=True)
+    task = models.ForeignKey(Task, on_delete=models.SET_NULL, blank=False)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False)
