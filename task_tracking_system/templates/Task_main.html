@@ -11,6 +11,16 @@
 
 <body>
 
+    <form method="GET">
+        {% csrf_token %}
+  
+        <div id = 'form-container'>
+            {{ form }}
+            <p></p>
+            <button type="submit", class="btn btn-primary">Шукати</button> 
+        </div>
+    </form>
+
     <ul>
         {% for task in tasks %}
             <li>{{ task.name }}, {{ task.description }}, {{ task.get_status_display }}, {{ task.get_priority_display }}, {{ task.deadline}}</li>
