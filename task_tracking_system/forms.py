@@ -26,3 +26,8 @@ class TaskForm(forms.ModelForm):
                 'type': 'date'
             }),
         }
+
+class TaskFilterForm(forms.Form):
+    status = forms.ChoiceField(choices=Task.STATUS_CHOICES, required=False)
+    priority = forms.ChoiceField(choices=Task.PRIORITY_CHOICES, required=False)
+    name = forms.CharField(required=False)

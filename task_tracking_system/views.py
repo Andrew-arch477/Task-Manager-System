@@ -4,22 +4,37 @@ from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm
-from task_tracking_system.filters import TaskFilter
+from task_tracking_system.forms import TaskForm, TaskFilterForm
 
-class Task_main(ListView):
-    queryset = Task.objects.all()
+class Task_ViewPage(ListView):
+    model = Task
     template_name = 'Task_main.html'
     context_object_name = 'tasks'
     
     def get_queryset(self):
-        queryset = super().get_queryset()
-        self.filter_set = TaskFilter(self.request.GET, queryset=queryset)
-        return self.filter_set.qs
+        queryset = Task.objects.all()
+        self.form = TaskFilterForm(self.request.GET)
+
+        if self.form.is_valid():
+            data = self.form.cleaned_data
+
+            name = data.get("name")
+            status = data.get("status")
+            priority = data.get("priority")
+
+
+            if name:
+                queryset = queryset.filter(name__icontains=name)
+            if status:
+                queryset = queryset.filter(status=status)
+            if priority:
+                queryset = queryset.filter(priority=priority)
+
+            return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = self.filter_set.form
+        context["form"] = self.form
         return context
         
 
