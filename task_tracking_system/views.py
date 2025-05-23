@@ -4,7 +4,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm, TaskFilterForm
+from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm
 
 class Task_ViewPage(ListView):
     model = Task
@@ -36,7 +36,6 @@ class Task_ViewPage(ListView):
         context = super().get_context_data(**kwargs)
         context["form"] = self.form
         return context
-        
 
 class Task_Create(FormView):
     template_name = 'Task_create.html'
@@ -51,4 +50,20 @@ class Task_Create(FormView):
             priority=form.cleaned_data['priority'],
             deadline=form.cleaned_data['deadline']
         )
-        return super().form_valid(form)   
+        return super().form_valid(form)
+
+class Task_Update(FormView):
+    template_name = 'Task_update.html'
+    form_class = TaskUpdateForm
+    success_url = '/task_m/Task_main/'
+
+    def form_valid(self, form):
+        task_id = self.kwargs.get('pk')
+
+        task = Task.objects.get(pk=task_id)
+        task.name=form.cleaned_data['name']
+        task.status=form.cleaned_data['status']
+        task.priority=form.cleaned_data['priority']
+        task.deadline=form.cleaned_data['deadline']
+        task.save()
+        return super().form_valid(form)

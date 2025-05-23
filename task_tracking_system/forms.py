@@ -27,7 +27,29 @@ class TaskForm(forms.ModelForm):
             }),
         }
 
+class TaskUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'status', 'priority', 'deadline']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': "Назва завдання",
+                'autofocus': 'autofocus',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'priority': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'deadline': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }
+
 class TaskFilterForm(forms.Form):
+    name = forms.CharField(required=False)
     status = forms.ChoiceField(choices=Task.STATUS_CHOICES, required=False)
     priority = forms.ChoiceField(choices=Task.PRIORITY_CHOICES, required=False)
-    name = forms.CharField(required=False)
