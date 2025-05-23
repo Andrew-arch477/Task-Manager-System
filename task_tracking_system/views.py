@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
@@ -67,3 +67,8 @@ class Task_Update(FormView):
         task.deadline=form.cleaned_data['deadline']
         task.save()
         return super().form_valid(form)
+
+class Task_Delete(DeleteView):
+    model = Task
+    template_name = 'Task_delete.html'
+    success_url = '/task_m/Task_main/'
