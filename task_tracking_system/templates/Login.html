@@ -10,25 +10,23 @@
 </head>
 
 <body>
-    <center>
-        <h1>Форма для сторення завдання</h1>
-    </center>
 
+    <center>
+        <h1>Форма для входу</h1>
+    </center>
+    <p></p>
+    <center>
         <form method="POST">
             {% csrf_token %}
     
-            <div id = 'form-container'>
+            <div id = 'form-group'>
                 {{ form.as_p }}
                 <p></p>
-                <center>
-                    <button type="submit", class="btn btn-success">Створити</button>
-                </center>
-                <p></p>
+                <button type="submit", class="btn btn-primary">Увійти</button>
             </div>
         </form>
-        <center>
-            <a href="/task/task_main/"><button type="submit", class="btn btn-secondary">Назад</button></a>
-        </center>
+        <a href="/task/task_main/"><button type="submit", class="btn btn-secondary">Назад</button></a>
+    </center>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 

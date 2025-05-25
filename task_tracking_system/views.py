@@ -1,10 +1,11 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm
+from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Task_ViewPage(ListView):
     model = Task
@@ -37,10 +38,10 @@ class Task_ViewPage(ListView):
         context["form"] = self.form
         return context
 
-class Task_Create(FormView):
+class Task_Create(LoginRequiredMixin, FormView):
     template_name = 'Task_create.html'
     form_class = TaskForm
-    success_url = '/task_m/Task_main/'
+    success_url = '/task/task_main/'
 
     def form_valid(self, form):
         Task.objects.create(
@@ -52,23 +53,40 @@ class Task_Create(FormView):
         )
         return super().form_valid(form)
 
-class Task_Update(FormView):
+class Task_Update(LoginRequiredMixin, FormView):
     template_name = 'Task_update.html'
     form_class = TaskUpdateForm
-    success_url = '/task_m/Task_main/'
+    success_url = '/task/task_main/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        task_id = self.kwargs.get('pk')
+        task = Task.objects.get(pk=task_id)
+        kwargs['instance'] = task
+        return kwargs
 
     def form_valid(self, form):
-        task_id = self.kwargs.get('pk')
-
-        task = Task.objects.get(pk=task_id)
-        task.name=form.cleaned_data['name']
-        task.status=form.cleaned_data['status']
-        task.priority=form.cleaned_data['priority']
-        task.deadline=form.cleaned_data['deadline']
-        task.save()
+        form.save() 
         return super().form_valid(form)
 
-class Task_Delete(DeleteView):
+class Task_Delete(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = 'Task_delete.html'
-    success_url = '/task_m/Task_main/'
+    success_url = '/task/task_main/'
+
+class Login_View(FormView):
+    template_name = "Login.html"
+    form_class = User_Login_Form
+    success_url = '/task/task_main/'
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(self.request, username=username, password=password)
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
+        else:
+            form.add_error(None, 'Невірний логін або пароль')
+            return self.form_invalid(form)
+

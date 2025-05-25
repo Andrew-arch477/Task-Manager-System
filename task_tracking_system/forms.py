@@ -53,3 +53,12 @@ class TaskFilterForm(forms.Form):
     name = forms.CharField(required=False)
     status = forms.ChoiceField(choices=Task.STATUS_CHOICES, required=False)
     priority = forms.ChoiceField(choices=Task.PRIORITY_CHOICES, required=False)
+
+class User_Login_Form(forms.Form):
+    username = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
