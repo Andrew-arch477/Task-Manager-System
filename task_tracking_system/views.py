@@ -3,9 +3,10 @@ from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form
+from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, User_Registration_Form
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 
 class Task_ViewPage(ListView):
     model = Task
@@ -90,3 +91,12 @@ class Login_View(FormView):
             form.add_error(None, 'Невірний логін або пароль')
             return self.form_invalid(form)
 
+class Registration_View(FormView):
+    template_name = "Registration.html"
+    form_class = UserCreationForm
+    success_url = '/task/login/'
+
+    def form_valid(self, form):
+        user = form.save()
+        self.object = user
+        return super().form_valid(form)
