@@ -65,7 +65,11 @@
     </center>
     <p></p>
     <center>
-        <a href="/task/login/"><button class="btn btn-info">Вхід</button></a>
+        {% if user.is_authenticated %}
+            <a href="/task/logout/"><button class="btn btn-warning">Вихід</button></a>
+        {% else %}
+            <a href="/task/login/"><button class="btn btn-info">Вхід</button></a>
+        {% endif %}
         <a href="/task/registration/"><button class="btn btn-secondary">Реєстрація</button></a>
     </center>
 

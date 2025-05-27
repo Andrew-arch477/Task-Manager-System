@@ -8,5 +8,6 @@ urlpatterns = [
     path('task_update/<str:pk>', views.Task_Update.as_view(), name='Task_update_page'),
     path('task_delete/<str:pk>', views.Task_Delete.as_view(), name='Task_delete_page'),
     path('login/', views.Login_View.as_view(), name='login_page'),
+    path('logout/', views.Logout_View.as_view(), name='logout_page'),
     path('registration/', views.Registration_View.as_view(), name='registration_page'),
 ]

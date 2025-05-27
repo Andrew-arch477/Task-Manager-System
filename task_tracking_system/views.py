@@ -1,10 +1,10 @@
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
 from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, User_Registration_Form
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 
@@ -100,3 +100,8 @@ class Registration_View(FormView):
         user = form.save()
         self.object = user
         return super().form_valid(form)
+
+class Logout_View(TemplateView):
+    def get(self, request):
+        logout(request)
+        return redirect('/task/login/')
