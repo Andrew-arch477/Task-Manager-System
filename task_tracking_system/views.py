@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
@@ -6,6 +6,7 @@ from task_tracking_system.models import Task, Comment
 from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, User_Registration_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from task_tracking_system.mixins import UserIsOwnerMixin
 from django.contrib.auth.forms import UserCreationForm
 
 class Task_ViewPage(ListView):
@@ -50,11 +51,12 @@ class Task_Create(LoginRequiredMixin, FormView):
             description=form.cleaned_data['description'],
             status=form.cleaned_data['status'],
             priority=form.cleaned_data['priority'],
-            deadline=form.cleaned_data['deadline']
+            deadline=form.cleaned_data['deadline'],
+            user_creator=self.request.user
         )
         return super().form_valid(form)
 
-class Task_Update(LoginRequiredMixin, FormView):
+class Task_Update(LoginRequiredMixin, UserIsOwnerMixin, FormView):
     template_name = 'Task_update.html'
     form_class = TaskUpdateForm
     success_url = '/task/task_main/'
@@ -69,8 +71,12 @@ class Task_Update(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         form.save() 
         return super().form_valid(form)
+    
+    def get_object(self):
+        task_id = self.kwargs.get('pk')
+        return get_object_or_404(Task, pk=task_id)
 
-class Task_Delete(LoginRequiredMixin, DeleteView):
+class Task_Delete(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     model = Task
     template_name = 'Task_delete.html'
     success_url = '/task/task_main/'
@@ -105,3 +111,4 @@ class Logout_View(TemplateView):
     def get(self, request):
         logout(request)
         return redirect('/task/login/')
+

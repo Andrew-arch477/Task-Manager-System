@@ -19,6 +19,7 @@ class Task(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='I')
     priority = models.CharField(max_length=2, choices=PRIORITY_CHOICES, default='U')
     deadline = models.DateField(null=True, blank=True)
+    user_creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
 
 
     def __str__(self): 
