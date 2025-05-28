@@ -3,7 +3,7 @@ from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, User_Registration_Form
+from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, CommentForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from task_tracking_system.mixins import UserIsOwnerMixin
@@ -112,3 +112,25 @@ class Logout_View(TemplateView):
         logout(request)
         return redirect('/task/login/')
 
+class Comment_Create_View(LoginRequiredMixin, FormView):
+    template_name = 'Comment.html'
+    form_class = CommentForm
+    success_url = '/task/task_main/'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.task = get_object_or_404(Task, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        Comment.objects.create(
+            text=form.cleaned_data['text'],
+            user=self.request.user,
+            task=self.task
+        )
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task'] = self.task
+        context['comments'] = Comment.objects.filter(task=self.task)
+        return context

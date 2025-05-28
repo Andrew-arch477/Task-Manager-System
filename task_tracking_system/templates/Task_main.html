@@ -41,6 +41,7 @@
             <th scope="col">Deadline</th>
             <th scope="col">Update</th>
             <th scope="col">Delete</th>
+            <th scope="col">Comments</th>
         </tr>
         {% for task in tasks %}
         <tr>
@@ -51,6 +52,7 @@
             <td>{{ task.deadline }}</td>
             <td><a href="{% url 'Task_update_page' task.id %}"><button class="btn btn-warning">Оновити</button></a></td>
             <td><a href="{% url 'Task_delete_page' task.id %}"><button class="btn btn-danger">Видалити</button></a></td>
+            <td><a href="{% url 'comment_page' task.id %}"><button class="btn btn-primary">Коментарі</button></a></td>
         </tr>
         {% endfor %}
     </table>
