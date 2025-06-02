@@ -6,3 +6,10 @@ class UserIsOwnerMixin:
         if obj.user_creator != request.user:
             raise PermissionDenied("It's not your task! Dont touch it!")
         return super().dispatch(request, *args, **kwargs)
+    
+class UserIsOwnerMixinComment:
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.user != request.user:
+            raise PermissionDenied("It's not your comment! Dont touch it!")
+        return super().dispatch(request, *args, **kwargs)
