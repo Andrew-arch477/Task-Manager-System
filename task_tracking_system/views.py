@@ -81,6 +81,7 @@ class Task_Delete(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     template_name = 'Task_delete.html'
     success_url = '/task/task_main/'
 
+
 class Login_View(FormView):
     template_name = "Login.html"
     form_class = User_Login_Form
@@ -111,6 +112,7 @@ class Logout_View(TemplateView):
     def get(self, request):
         logout(request)
         return redirect('/task/login/')
+
 
 class Comment_Create_View(LoginRequiredMixin, FormView):
     template_name = 'Comment.html'
@@ -155,3 +157,7 @@ class Comment_Update_View(UserIsOwnerMixinComment, FormView):
         comment_id = self.kwargs.get('pk')
         return get_object_or_404(Comment, pk=comment_id)
 
+class Comment_Delete_View(UserIsOwnerMixinComment, DeleteView):
+    model = Comment
+    template_name = 'Comment_delete.html'
+    success_url = '/task/task_main/'
