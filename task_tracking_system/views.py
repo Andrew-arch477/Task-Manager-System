@@ -6,7 +6,7 @@ from task_tracking_system.models import Task, Comment
 from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, CommentForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from task_tracking_system.mixins import UserIsOwnerMixin
+from task_tracking_system.mixins import UserIsOwnerMixin, UserIsOwnerMixinComment
 from django.contrib.auth.forms import UserCreationForm
 
 class Task_ViewPage(ListView):
@@ -134,3 +134,24 @@ class Comment_Create_View(LoginRequiredMixin, FormView):
         context['task'] = self.task
         context['comments'] = Comment.objects.filter(task=self.task)
         return context
+
+class Comment_Update_View(UserIsOwnerMixinComment, FormView):
+    template_name = 'Comment_update.html'
+    form_class = CommentForm
+    success_url = '/task/task_main/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        comment_id = self.kwargs.get('pk')
+        comment = Comment.objects.get(pk=comment_id)
+        kwargs['instance'] = comment
+        return kwargs
+
+    def form_valid(self, form):
+        form.save() 
+        return super().form_valid(form)
+    
+    def get_object(self):
+        comment_id = self.kwargs.get('pk')
+        return get_object_or_404(Comment, pk=comment_id)
+
