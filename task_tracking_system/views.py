@@ -3,11 +3,12 @@ from django.views.generic.edit import FormView, DeleteView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from task_tracking_system.models import Task, Comment
-from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, CommentForm
+from task_tracking_system.forms import TaskForm, TaskFilterForm, TaskUpdateForm, User_Login_Form, CommentForm, RegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from task_tracking_system.mixins import UserIsOwnerMixin, UserIsOwnerMixinComment
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 
 class Task_ViewPage(ListView):
     model = Task
@@ -43,7 +44,7 @@ class Task_ViewPage(ListView):
 class Task_Create(LoginRequiredMixin, FormView):
     template_name = 'Task_create.html'
     form_class = TaskForm
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
     def form_valid(self, form):
         Task.objects.create(
@@ -59,7 +60,7 @@ class Task_Create(LoginRequiredMixin, FormView):
 class Task_Update(LoginRequiredMixin, UserIsOwnerMixin, FormView):
     template_name = 'Task_update.html'
     form_class = TaskUpdateForm
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -79,13 +80,13 @@ class Task_Update(LoginRequiredMixin, UserIsOwnerMixin, FormView):
 class Task_Delete(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     model = Task
     template_name = 'Task_delete.html'
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
 
 class Login_View(FormView):
     template_name = "Login.html"
     form_class = User_Login_Form
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
     def form_valid(self, form):
         username = form.cleaned_data['username']
@@ -100,8 +101,8 @@ class Login_View(FormView):
 
 class Registration_View(FormView):
     template_name = "Registration.html"
-    form_class = UserCreationForm
-    success_url = '/task/login/'
+    form_class = RegistrationForm
+    success_url = reverse_lazy('login_page')
 
     def form_valid(self, form):
         user = form.save()
@@ -111,13 +112,13 @@ class Registration_View(FormView):
 class Logout_View(TemplateView):
     def get(self, request):
         logout(request)
-        return redirect('/task/login/')
+        return redirect('/login/')
 
 
 class Comment_Create_View(LoginRequiredMixin, FormView):
     template_name = 'Comment.html'
     form_class = CommentForm
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
     def dispatch(self, request, *args, **kwargs):
         self.task = get_object_or_404(Task, pk=self.kwargs['pk'])
@@ -140,7 +141,7 @@ class Comment_Create_View(LoginRequiredMixin, FormView):
 class Comment_Update_View(UserIsOwnerMixinComment, FormView):
     template_name = 'Comment_update.html'
     form_class = CommentForm
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -160,4 +161,4 @@ class Comment_Update_View(UserIsOwnerMixinComment, FormView):
 class Comment_Delete_View(UserIsOwnerMixinComment, DeleteView):
     model = Comment
     template_name = 'Comment_delete.html'
-    success_url = '/task/task_main/'
+    success_url = reverse_lazy('Task_main_page')

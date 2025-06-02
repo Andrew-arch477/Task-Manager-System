@@ -14,9 +14,9 @@
     </center>
 
     <center>
-        <a href="/task/task_main/"><button type="submit", class="btn btn-primary btn-lg active">Ні</button></a>
+        <a href="{% url 'Task_main_page' %}"><button type="submit", class="btn btn-primary btn-lg active">Ні</button></a>
     </center>
-
+    <p></p>
     <form method="POST">
         {% csrf_token %}
         <center>
