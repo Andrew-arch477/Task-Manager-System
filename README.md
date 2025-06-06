@@ -2,12 +2,11 @@
 A task managment system made with django.
 
 ## Requirements
-* Python 4
+* Python 3
 * Django 4
 * Git
 * HTML
 * Bootstrap
-* Venv (optional but highly recommended)
 
 ## Main features
 * User authentication (login, register also logout) out of the box
